@@ -1,0 +1,8 @@
+task:
+  ['yolov5x.pt', 'yolov5x.pt', 'yolov5x.pt', 'yolov5x.pt']
+
+deadline:
+  [100, 200, 200, 100]
+
+streams: 1 # Indicate the number of video streams
+
