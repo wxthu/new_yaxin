@@ -1,4 +1,5 @@
 
+import json
 import multiprocessing as mp
 import torch
 import yaml
@@ -18,7 +19,7 @@ def lcm_list(lst: list):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    manager = Manager()
+    # manager = Manager()
     filePath = "/home/air/yolov5/our_config.yaml"
     with open(file=filePath, mode="rb") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
@@ -38,10 +39,8 @@ if __name__ == '__main__':
                               intervals=[d / 1000 for d in ddls],
                               )
     
-    # model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5x.pt')
-    # model = torch.jit.script(model)
+    
     for j, task in enumerate(tasks):
-        # model = DetectMultiBackend(weights=task, fp16=True)
         processes.append(TaskEngine(name='task_%d'%(j),
                                     barrier=shared_barr,
                                     result=results[j],
@@ -59,5 +58,17 @@ if __name__ == '__main__':
     for ps in processes:
         ps.join()
         
-    # print("Overall time: {} second".format(max(timing) - min(timing)))
+    total_violated = 0
+    total_task = 0
+    timing = list()
+    for result in results:
+        start, end, violated, task_num = json.loads(result.get())
+        timing.append(start)
+        timing.append(end)
+        total_violated += violated
+        total_task += task_num
+        
+    qos_violation = round(total_violated / total_task, 3)
+    print("Overall time: {} second".format(max(timing) - min(timing)))
+    print("The number of timed-out task is {} and QoS violation rate: {}%".format(total_violated, 100 * qos_violation))
     

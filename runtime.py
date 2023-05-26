@@ -47,7 +47,8 @@ class TaskEngine(mp.Process):
         self._barrier.wait()
         
         violated = 0
-        start = time.time()
+        task_num = 0
+        p_start = time.time()
         while True:
             signal = self._img_queue.get()
             if signal == 'exit': break
@@ -62,12 +63,13 @@ class TaskEngine(mp.Process):
             for res in y[1]:
                 res = res.cpu()  
             end  = time.time()
+            task_num += 1
             if (end - start) * 1000 > self._ddl:
                 violated += 1
             # print(f"{self._name} completes inference one time ...")
         
-        end = time.time()    
-        self._tracking.put(json.dumps((start, end, violated)))
+        p_end = time.time()    
+        self._tracking.put(json.dumps((p_start, p_end, violated, task_num)))
         
         print("{} has finished successfully !!!".format(self._name))
 
