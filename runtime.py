@@ -64,9 +64,9 @@ class TaskEngine(mp.Process):
             for res in y[1]:
                 res = res.cpu()  
             end  = time.time()
-            task_num += 1
+            task_num += self._bsize
             if (end - start) * 1000 > self._ddl:
-                violated += 1
+                violated += self._bsize
             # print(f"{self._name} completes inference one time ...")
         
         p_end = time.time()    
