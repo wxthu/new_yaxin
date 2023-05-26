@@ -39,7 +39,6 @@ class MultiTasks(Process):
         
         self._queues[task_id].put('exit')
         print("#### Task_{} finished and image number: {} ####".format(task_id, target_num))
-        print("**** Final size of task_{} img queue : {} ****".format(task_id, self._queues[task_id].qsize()))
             
     def run(self):
         thread_barrier = threading.Barrier(self._task_num + 1)
