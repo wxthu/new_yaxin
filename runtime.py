@@ -59,6 +59,7 @@ class TaskEngine(mp.Process):
             torch.cuda.synchronize()
             
             # len(y) == 2 and len(y[0]) == 1, len(y[1]) == 3
+            del ims
             y[0] = y[0].cpu()
             for res in y[1]:
                 res = res.cpu()  

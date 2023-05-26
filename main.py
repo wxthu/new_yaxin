@@ -19,7 +19,7 @@ def lcm_list(lst: list):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    # manager = Manager()
+    torch.multiprocessing.set_sharing_strategy('file_system')
     filePath = "/home/air/yolov5/our_config.yaml"
     with open(file=filePath, mode="rb") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
