@@ -105,16 +105,12 @@ def main():
 if __name__ == '__main__':
     mp.set_start_method('spawn')
     torch.multiprocessing.set_sharing_strategy('file_system')
-    # models = {'yolov5x' : DetectMultiBackend(weights='yolov5x.pt', fp16=True),
-    #           'yolov5m' : DetectMultiBackend(weights='yolov5m.pt', fp16=True),
-    #           'yolov5s' : DetectMultiBackend(weights='yolov5s.pt', fp16=True),
-    #           'resnet50' : resnet50().half().eval(),
-    #           'mobilenet_v2' : mobilenet_v2().half().eval(),
-    #           'inception_v3' : inception_v3(init_weights=True).half().eval(),
-    #           }
-    models = {
+    models = {'yolov5x' : DetectMultiBackend(weights='yolov5x.pt', fp16=True),
+              'yolov5m' : DetectMultiBackend(weights='yolov5m.pt', fp16=True),
               'yolov5s' : DetectMultiBackend(weights='yolov5s.pt', fp16=True),
-              
+              'resnet50' : resnet50().half().eval(),
+              'mobilenet_v2' : mobilenet_v2().half().eval(),
+              'inception_v3' : inception_v3(init_weights=True).half().eval(),
               }
     main()
     
