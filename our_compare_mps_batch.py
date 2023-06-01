@@ -31,26 +31,26 @@ class Task(Process):
     
     @torch.no_grad()   
     def run(self):
-        with torch.cuda.stream(torch.cuda.Stream()):
-            self._model.eval().to('cuda')
-            img = torch.rand(self._bsize, 3, 640, 640, dtype=torch.float16).cuda()
-            for _ in range(50):
-                y = self._model(img)
-            torch.cuda.synchronize()
-            
-            # formal comparision
-            self._barrier.wait()
-            start = time_sync()
-            for _ in range(50):
-                y = self._model(img)
-            end = time_sync()
-            
-            self._private.append(round(1000*(end - start)/50, 1))
-      
+        # with torch.cuda.stream(torch.cuda.Stream()):
+        self._model.eval().to('cuda')
+        img = torch.rand(self._bsize, 3, 640, 640, dtype=torch.float16).cuda()
+        for _ in range(50):
+            y = self._model(img)
+        torch.cuda.synchronize()
+        
+        # formal comparision
+        self._barrier.wait()
+        start = time_sync()
+        for _ in range(50):
+            y = self._model(img)
+        end = time_sync()
+        
+        self._private.append(round(1000*(end - start)/50, 1))
 
+@torch.no_grad()
 def main():
     
-    parallelism = 6
+    parallelism = 8
     
     for name, engine in models.items():
         avg_latency = []
@@ -84,7 +84,9 @@ def main():
                 out = engine(im)
             end = time_sync()
             batch_latency.append(round(1000*(end-start)/50, 1))
-         
+        
+        engine.to('cpu')
+        del im, out
         # plotting
         fig, ax = plt.subplots(layout='constrained')
         
